@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.test.junit;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.status.StatusConsoleListener;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.status.StatusListener;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.platform.launcher.LauncherSession;
 import org.junit.platform.launcher.LauncherSessionListener;
@@ -25,11 +30,37 @@ import org.junit.platform.launcher.LauncherSessionListener;
  */
 public class Log4j2LauncherSessionListener implements LauncherSessionListener {
 
+    private static final String DISABLE_CONSOLE_STATUS_LISTENER = "log4j2.junit.disableConsoleStatusListener";
+
     @Override
     public void launcherSessionOpened(LauncherSession session) {
         // Prevents `PropertiesUtil` from initializing (and caching the results)
         // in the middle of a test.
-        PropertiesUtil.getProperties();
+        final PropertiesUtil properties = PropertiesUtil.getProperties();
+        if (properties.getBooleanProperty(DISABLE_CONSOLE_STATUS_LISTENER)) {
+            replaceStatusConsoleListener();
+        }
+    }
+
+    private static void replaceStatusConsoleListener() {
+        final StatusLogger logger = StatusLogger.getLogger();
+        for (final StatusListener listener : logger.getListeners()) {
+            if (listener instanceof StatusConsoleListener) {
+                logger.removeListener(listener);
+            }
+        }
+        logger.registerListener(new NoOpStatusConsoleListener());
+    }
+
+    private static class NoOpStatusConsoleListener extends StatusConsoleListener {
+
+        public NoOpStatusConsoleListener() {
+            super(Level.OFF);
+        }
+
+        public void log(final StatusData data) {
+            // NOP
+        }
     }
 
 }

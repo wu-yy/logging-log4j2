@@ -32,7 +32,7 @@ public class ExtensionContextAnchor
     public static Namespace LOG4J2_NAMESPACE = Namespace.create("org.apache.logging.log4j.junit");
     private static final ThreadLocal<ExtensionContext> EXTENSION_CONTEXT = new InheritableThreadLocal<>();
 
-    private static void bind(ExtensionContext context) {
+    static void bind(ExtensionContext context) {
         EXTENSION_CONTEXT.set(context);
     }
 
@@ -48,19 +48,19 @@ public class ExtensionContextAnchor
         return context != null ? context : EXTENSION_CONTEXT.get();
     }
 
-    static <T> T getAttribute(Object key, Class<T> clazz, ExtensionContext context) {
+    public static <T> T getAttribute(Object key, Class<T> clazz, ExtensionContext context) {
         final ExtensionContext actualContext = getContext(context);
         assertNotNull(actualContext, "missing ExtensionContext");
         return actualContext.getStore(LOG4J2_NAMESPACE).get(key, clazz);
     }
 
-    static void setAttribute(Object key, Object value, ExtensionContext context) {
+    public static void setAttribute(Object key, Object value, ExtensionContext context) {
         final ExtensionContext actualContext = getContext(context);
         assertNotNull(actualContext, "missing ExtensionContext");
         actualContext.getStore(LOG4J2_NAMESPACE).put(key, value);
     }
 
-    static void removeAttribute(Object key, ExtensionContext context) {
+    public static void removeAttribute(Object key, ExtensionContext context) {
         final ExtensionContext actualContext = getContext(context);
         if (actualContext != null) {
             actualContext.getStore(LOG4J2_NAMESPACE).remove(key);
