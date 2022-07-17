@@ -53,7 +53,6 @@ public class PluginManagerPackagesTest {
         if (ctx != null) {
             ctx.reconfigure();
         }
-        StatusLogger.getLogger().reset();
     }
 
     @AfterAll

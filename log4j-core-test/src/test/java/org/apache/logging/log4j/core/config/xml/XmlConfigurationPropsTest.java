@@ -37,7 +37,6 @@ public class XmlConfigurationPropsTest {
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
-        StatusLogger.getLogger().reset();
     }
 
     @Test

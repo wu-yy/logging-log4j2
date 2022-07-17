@@ -56,7 +56,6 @@ public class AdvertiserTest {
         System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
-        StatusLogger.getLogger().reset();
     }
 
     private void verifyExpectedEntriesAdvertised(final Map<Object, Map<String, String>> entries) {
