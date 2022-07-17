@@ -334,11 +334,52 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <runOrder>random</runOrder>
           <systemPropertyVariables>
             <log4j2.is.webapp>false</log4j2.is.webapp>
           </systemPropertyVariables>
-          <runOrder>random</runOrder>
         </configuration>
+        <executions>
+          <execution>
+            <id>default-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <systemPropertyVariables>
+                <!-- Enables parallel tests:
+                <junit.jupiter.execution.parallel.config.strategy>dynamic</junit.jupiter.execution.parallel.config.strategy>
+                <junit.jupiter.execution.parallel.config.dynamic.factor>1</junit.jupiter.execution.parallel.config.dynamic.factor>
+                <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
+                <junit.jupiter.execution.parallel.mode.default>same_thread</junit.jupiter.execution.parallel.mode.default>
+                <junit.jupiter.execution.parallel.mode.classes.default>concurrent</junit.jupiter.execution.parallel.mode.classes.default>
+                <junit.jupiter.testclass.order.default>org.junit.jupiter.api.ClassOrderer$Random</junit.jupiter.testclass.order.default>
+                -->
+                <!-- Enables the `ExtensionContextAnchor` and `StatusLoggerExtention` on each test -->
+                <junit.jupiter.extensions.autodetection.enabled>true</junit.jupiter.extensions.autodetection.enabled>
+                <log4j2.contextSelector>org.apache.logging.log4j.core.test.junit.JUnitContextSelector</log4j2.contextSelector>
+                <log4j2.StatusLogger.level>DEBUG</log4j2.StatusLogger.level>
+                <log4j2.junit.disableConsoleStatusListener>true</log4j2.junit.disableConsoleStatusListener>
+              </systemPropertyVariables>
+              <runOrder>random</runOrder>
+              <forkCount>1</forkCount>
+              <reuseForks>true</reuseForks>
+              <redirectTestOutputToFile>false</redirectTestOutputToFile>
+              <includeJUnit5Engines>junit-jupiter</includeJUnit5Engines>
+            </configuration>
+          </execution>
+          <execution>
+            <id>junit4-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <excludeJUnit5Engines>junit-jupiter</excludeJUnit5Engines>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

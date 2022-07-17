@@ -66,7 +66,7 @@ public @interface LoggerContextSource {
     /**
      * Specifies the name of the configuration file to use for the annotated test.
      */
-    String value();
+    String value() default "";
 
     /**
      * Specifies when to {@linkplain LoggerContext#reconfigure() reconfigure} the logging system.
@@ -88,8 +88,4 @@ public @interface LoggerContextSource {
      */
     boolean v1config() default false;
 
-    /**
-     * Determines whether to bootstrap a fresh LoggerContextFactory.
-     */
-    boolean bootstrap() default false;
 }
