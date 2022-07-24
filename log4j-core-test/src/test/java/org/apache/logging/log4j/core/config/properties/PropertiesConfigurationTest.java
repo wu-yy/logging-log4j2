@@ -132,8 +132,8 @@ class PropertiesConfigurationTest {
         assertEquals(1, firstEvents.size());
     }
 
-    @SetSystemProperty(key = "coreProps", value = "DEBUG, first, second")
     @Test
+    @SetSystemProperty(key = "coreProps", value = "DEBUG, first, second")
     @LoggerContextSource("LoggerLevelSysPropsAppenderTest.properties")
     void testLoggerLevelSysPropsAppender(final LoggerContext context, @Named final ListAppender first,
             @Named final ListAppender second, @Named final ListAppender third) {

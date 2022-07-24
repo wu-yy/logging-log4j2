@@ -19,12 +19,14 @@ package org.apache.logging.log4j.core;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.AbstractSerializationTest;
 import org.junit.runners.Parameterized.Parameters;
 
 public class LoggerSerializationTest extends AbstractSerializationTest {
 
     @Parameters
+    @LoggerContextSource
     protected Stream<Object> data() {
         return Stream.of(new LoggerContext("").getLogger("", null),
                 LogManager.getRootLogger(),

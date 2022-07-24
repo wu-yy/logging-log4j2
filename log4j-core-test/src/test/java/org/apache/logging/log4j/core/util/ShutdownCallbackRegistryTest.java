@@ -42,7 +42,7 @@ public class ShutdownCallbackRegistryTest {
     }
 
     @Test
-    @LoggerContextSource(value = "ShutdownCallbackRegistryTest.xml", bootstrap = true)
+    @LoggerContextSource(value = "ShutdownCallbackRegistryTest.xml")
     public void testShutdownCallbackRegistry(final LoggerContext context) {
         assertTrue(context.isStarted(), "LoggerContext should be started");
         assertThat(Registry.CALLBACKS, hasSize(1));

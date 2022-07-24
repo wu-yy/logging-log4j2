@@ -30,6 +30,8 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.ReconfigurationPolicy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -40,6 +42,7 @@ import static org.hamcrest.Matchers.containsString;
 /**
  * Tests {@link WriterAppender}.
  */
+@LoggerContextSource(reconfigure = ReconfigurationPolicy.BEFORE_EACH)
 public class WriterAppenderTest {
 
     private static final String TEST_MSG = "FOO ERROR";

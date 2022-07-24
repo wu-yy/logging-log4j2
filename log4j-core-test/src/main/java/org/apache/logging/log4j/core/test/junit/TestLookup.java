@@ -14,22 +14,29 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core;
+package org.apache.logging.log4j.core.test.junit;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.lookup.Lookup;
+import org.apache.logging.log4j.core.lookup.StrLookup;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.test.junit.TestPropertySource;
 
-@Tag("smoke")
-@LoggerContextSource
-public class BasicLoggingTest {
+/**
+ * Lookups keys from per-test properties.
+ */
+@Lookup
+@Plugin("test")
+public class TestLookup implements StrLookup {
 
-    @Test
-    public void test1() {
-        final Logger logger = LogManager.getLogger(BasicLoggingTest.class.getName());
-        logger.debug("debug not set");
-        logger.error("Test message");
+    @Override
+    public String lookup(final String key) {
+        return TestPropertySource.getProperties().getProperty(key);
+    }
+
+    @Override
+    public String lookup(final LogEvent event, final String key) {
+        return lookup(key);
     }
 }
+

@@ -17,20 +17,22 @@
 
 package org.apache.logging.log4j.core.appender;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Optional;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusData;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.StatusMessages;
+import org.apache.logging.log4j.test.junit.UsingStatusLogger;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * OutputStreamManager Tests.
@@ -39,17 +41,15 @@ public class OutputStreamManagerTest {
 
     @Test
     @LoggerContextSource("multipleIncompatibleAppendersTest.xml")
-    public void narrow(final LoggerContext context) {
+    @UsingStatusLogger
+    public void narrow(final LoggerContext context, final StatusMessages messages) {
         final Logger logger = context.getLogger(OutputStreamManagerTest.class);
         logger.info("test");
-        final List<StatusData> statusData = StatusLogger.getLogger().getStatusData();
-        StatusData data = statusData.get(0);
-        if (data.getMessage().getFormattedMessage().contains("WindowsAnsiOutputStream")) {
-            data = statusData.get(1);
-        }
-        assertEquals(Level.ERROR, data.getLevel());
+        final Optional<StatusData> error = messages.findStatusMessages(Level.ERROR, "RollingRandomAccessFile")
+                .findFirst();
+        assertTrue(error.isPresent(), "Missing error message");
         assertEquals("Could not configure plugin element RollingRandomAccessFile: org.apache.logging.log4j.core.config.ConfigurationException: Configuration has multiple incompatible Appenders pointing to the same resource 'target/multiIncompatibleAppender.log'",
-                data.getMessage().getFormattedMessage());
+                error.get().getMessage().getFormattedMessage());
     }
 
     @Test

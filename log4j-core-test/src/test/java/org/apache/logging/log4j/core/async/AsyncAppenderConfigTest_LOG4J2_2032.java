@@ -16,35 +16,36 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.test.junit.CleanUpFiles;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("async")
-@SetSystemProperty(key = "log4j2.logEventFactory", value = "org.apache.logging.log4j.core.impl.ReusableLogEventFactory")
-@SetSystemProperty(key = "log4j2.messageFactory", value = "org.apache.logging.log4j.message.ReusableMessageFactory")
-@SetSystemProperty(key = "log4j2.configurationFile", value = "AsyncAppenderConfigTest-LOG4J2-2032.xml")
+@SetTestProperty(key = "log4j2.logEventFactory", value = "org.apache.logging.log4j.core.impl.ReusableLogEventFactory")
+@SetTestProperty(key = "log4j2.messageFactory", value = "org.apache.logging.log4j.message.ReusableMessageFactory")
 public class AsyncAppenderConfigTest_LOG4J2_2032 {
 
     @Test
     @CleanUpFiles("target/AsyncAppenderConfigTest-LOG4J2-2032.log")
-    public void doNotProcessPlaceholdersTwice() throws Exception {
+    @LoggerContextSource("AsyncAppenderConfigTest-LOG4J2-2032.xml")
+    public void doNotProcessPlaceholdersTwice(LoggerContext context) throws Exception {
         final File file = new File("target", "AsyncAppenderConfigTest-LOG4J2-2032.log");
-        assertTrue(!file.exists() || file.delete(), "Deleted old file before test");
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
         log.info("Text containing curly braces: {}", "Curly{}");
-        CoreLoggerContexts.stopLoggerContext(file); // stop async thread
+        context.stop(); // stop async thread
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             final String line1 = reader.readLine();

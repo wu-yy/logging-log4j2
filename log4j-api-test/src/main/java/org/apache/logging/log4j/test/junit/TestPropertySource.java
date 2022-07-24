@@ -46,7 +46,7 @@ public class TestPropertySource implements PropertySource {
         return props;
     }
 
-    private static TestProperties getProperties() {
+    public static TestProperties getProperties() {
         return getProperties(null);
     }
 

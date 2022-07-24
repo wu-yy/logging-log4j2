@@ -16,12 +16,10 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,21 +28,25 @@ import java.lang.ref.Cleaner;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("functional")
-@SetSystemProperty(key = "log4j2.enable.direct.encoders", value = "true")
-@SetSystemProperty(key = "log4j2.configurationFile", value = "EventParameterMemoryLeakTest.xml")
 public class EventParameterMemoryLeakTest {
 
     @Test
+    @SetTestProperty(key = "log4j2.enable.direct.encoders", value = "true")
+    @CleanUpFiles("target/EventParameterMemoryLeakTest.log")
+    @LoggerContextSource(value = "EventParameterMemoryLeakTest.xml")
     @SuppressWarnings("UnusedAssignment") // parameter set to null to allow garbage collection
     public void testParametersAreNotLeaked() throws Exception {
         final File file = new File("target", "EventParameterMemoryLeakTest.log");
-        assertTrue(!file.exists() || file.delete(), "Deleted old file before test");
 
         final Logger log = LogManager.getLogger("com.foo.Bar");
         CountDownLatch latch = new CountDownLatch(1);

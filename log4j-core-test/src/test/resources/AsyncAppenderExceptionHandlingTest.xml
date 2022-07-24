@@ -19,7 +19,7 @@
 -->
 <Configuration status="OFF" name="AsyncAppenderExceptionHandlingTest">
   <Appenders>
-    <FailOnce name="FailOnce" throwableClassName="${sys:throwableClassName}"/>
+    <FailOnce name="FailOnce" throwableClassName="${test:throwableClassName}"/>
     <Async name="Async">
       <AppenderRef ref="FailOnce" />
     </Async>
